@@ -1,0 +1,1 @@
+web: java -jar target/land2110e-1.0.jar

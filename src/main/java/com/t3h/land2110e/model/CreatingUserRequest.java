@@ -2,23 +2,15 @@ package com.t3h.land2110e.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class User {
-    @JsonProperty(required = true)
-    private int id;
+public class CreatingUserRequest {
     @JsonProperty(required = true)
     private String username;
+    private String email;
     @JsonProperty(required = false)
     private String password;
     @JsonProperty(required = true)
-    private int age;
+    private String avatar;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -26,6 +18,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -36,11 +36,11 @@ public class User {
         this.password = password;
     }
 
-    public int getAge() {
-        return age;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

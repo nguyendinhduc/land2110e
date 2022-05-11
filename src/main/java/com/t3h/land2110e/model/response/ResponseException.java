@@ -2,7 +2,7 @@ package com.t3h.land2110e.model.response;
 
 import org.springframework.http.HttpStatus;
 
-public class ResponseException extends Exception{
+public class ResponseException extends RuntimeException{
     private HttpStatus httpCode;
     private int status;
 

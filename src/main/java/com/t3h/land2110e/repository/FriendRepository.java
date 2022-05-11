@@ -15,4 +15,11 @@ public interface FriendRepository extends JpaRepository<FriendEntity, Integer> {
             @Param("friendId") int friendId
     );
 
+    @Query(nativeQuery = true, value =
+            "SELECT * FROM friend where sender_id = :senderId and receiver_id = :receiverId limit 1")
+    FriendEntity findOneBySenderIdAndReceiverId(
+            @Param("senderId") int senderId,
+            @Param("receiverId") int receiverId
+    );
+
 }

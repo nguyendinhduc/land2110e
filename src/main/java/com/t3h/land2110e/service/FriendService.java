@@ -5,6 +5,7 @@ import com.t3h.land2110e.entity.UserProfileEntity;
 import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.repository.FriendRepository;
 import com.t3h.land2110e.repository.UserProfileRepository;
+import com.t3h.land2110e.security.AuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,8 @@ public class FriendService {
     @Autowired
     private UserProfileRepository userProfileRepository;
 
-    public Object makeFriend(int userId, int friendId) throws ResponseException {
+    public Object makeFriend(int friendId) throws ResponseException {
+        int userId = AuthorizationFilter.getCurrentUserId();
         if (userId == friendId ){
             throw new ResponseException("userId not equal friendId");
         }
@@ -74,4 +76,22 @@ public class FriendService {
         return friend;
 
     }
+
+    public Object acceptFriend(int friendId) {
+        int userId = AuthorizationFilter.getCurrentUserId();
+        FriendEntity friendEntity = this.friendRepository.findOneBySenderIdAndReceiverId(
+                friendId, userId
+        );
+        if ( friendEntity == null ){
+            throw new ResponseException("You can not accepted friend because user "+friendId+" not yet request");
+        }
+        if ( !"pending".equals(friendEntity.getStatus())){
+            throw new ResponseException("Status must be pending");
+        }
+        friendEntity.setStatus("accepted");
+        this.friendRepository.save(friendEntity);
+        return friendEntity;
+
+    }
+    //lấy ra các bạn bè của thằng id = 4:  id, firstName, lastName, avatar, lastmessage
 }

@@ -1,5 +1,7 @@
 package com.t3h.land2110e.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -13,6 +15,7 @@ public class UserProfileEntity {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
     private String username;
+    @JsonIgnore
     private String password;
     private String email;
     private String description;
@@ -24,6 +27,10 @@ public class UserProfileEntity {
     @LastModifiedDate
     private Date updatedAt;
     private String avatar;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
 
     public int getId() {
         return id;
@@ -87,5 +94,21 @@ public class UserProfileEntity {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

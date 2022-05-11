@@ -3,6 +3,7 @@ package com.t3h.land2110e.controller;
 import com.t3h.land2110e.entity.UserProfileEntity;
 import com.t3h.land2110e.model.CreatingUserRequest;
 import com.t3h.land2110e.model.request.LoginRequest;
+import com.t3h.land2110e.model.request.RegisterRequest;
 import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,13 @@ public class UsersController {
     ) throws ResponseException {
         return this.userService.login(request);
     }
+
+    @PostMapping("/users/register")
+    public Object register(@RequestBody RegisterRequest request) throws ResponseException{
+        return this.userService.register(request);
+    }
+
+
     //1. ket ban
 //    => input:
     //2. dong y/huy het ban

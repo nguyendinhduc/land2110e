@@ -4,10 +4,7 @@ import com.t3h.land2110e.model.request.MakingFriendRequest;
 import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class FriendController {
@@ -20,12 +17,19 @@ public class FriendController {
         );
     }
 
-    @PostMapping("/api/friend/accept")
+    @PostMapping("/api/friends/accept")
     public Object acceptFriend(
             @RequestParam("friendId") int friendId
     ){
         return friendService.acceptFriend(
                 friendId
         );
+    }
+
+    @GetMapping("/api/friends")
+    public Object getFriend(
+            @RequestParam(value = "status", required = false) String status
+    ){
+        return friendService.getFriend(status);
     }
 }

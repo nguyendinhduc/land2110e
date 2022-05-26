@@ -4,6 +4,7 @@ import com.t3h.land2110e.entity.FriendEntity;
 import com.t3h.land2110e.entity.UserProfileEntity;
 import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.repository.FriendRepository;
+import com.t3h.land2110e.repository.FriendResponseRepository;
 import com.t3h.land2110e.repository.UserProfileRepository;
 import com.t3h.land2110e.security.AuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class FriendService {
     private FriendRepository friendRepository;
     @Autowired
     private UserProfileRepository userProfileRepository;
+    @Autowired
+    private FriendResponseRepository friendResponseRepository;
 
     public Object makeFriend(int friendId) throws ResponseException {
         int userId = AuthorizationFilter.getCurrentUserId();
@@ -92,6 +95,12 @@ public class FriendService {
         this.friendRepository.save(friendEntity);
         return friendEntity;
 
+    }
+
+    public Object getFriend(String status) {
+        return friendResponseRepository.getFriends(
+                AuthorizationFilter.getCurrentUserId(), status == null ? "" : status
+        );
     }
     //lấy ra các bạn bè của thằng id = 4:  id, firstName, lastName, avatar, lastmessage
 }

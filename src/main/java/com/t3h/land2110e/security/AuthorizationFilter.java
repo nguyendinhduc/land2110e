@@ -5,7 +5,9 @@ import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.model.response.UserContext;
 import com.t3h.land2110e.repository.UserProfileRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,18 +42,26 @@ public class AuthorizationFilter extends AbstractAuthenticationProcessingFilter 
         UserProfileEntity user = parseToken( token);
         return new UsernamePasswordAuthenticationToken(user, null);
     }
-    private UserProfileEntity parseToken(String token) throws ResponseException{
+    private UserProfileEntity parseToken(String token) throws ResponseException, AuthenticationException{
         //giải mã token để lấy thông tin
-        Claims claims = Jwts.parser()
-                .setSigningKey("123a@")
-                .parseClaimsJws(token)
-                .getBody();
-        String username = claims.getSubject();
-        UserProfileEntity user = userProfileRepository.findOneByUsername(username);
-        if ( user == null ){
-            throw new ResponseException("User not exist");
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey("123a@")
+                    .parseClaimsJws(token)
+                    .getBody();
+            String username = claims.getSubject();
+            UserProfileEntity user = userProfileRepository.findOneByUsername(username);
+            if ( user == null ){
+                throw new ResponseException("User not exist");
+            }
+            return user;
+        }catch (ExpiredJwtException e){
+            throw new AuthenticationException("Expired token", e) {
+
+            };
         }
-        return user;
+
+
     }
 
     @Override

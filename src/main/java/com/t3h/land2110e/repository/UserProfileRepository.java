@@ -20,4 +20,10 @@ public interface UserProfileRepository extends JpaRepository<UserProfileEntity, 
     UserProfileEntity findById(
             @Param("id") int id
     );
+
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM user_profile where id = :userId LIMIT 1")
+    UserProfileEntity findOneById(
+            @Param("userId") int userId
+    );
 }

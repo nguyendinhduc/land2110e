@@ -50,6 +50,11 @@ public class UsersController {
         return this.userService.register(request);
     }
 
+    @GetMapping("/api/users/me")
+    public Object getMyProfile(){
+        return this.userService.getMyProfile();
+    }
+
 
     //1. ket ban
 //    => input:

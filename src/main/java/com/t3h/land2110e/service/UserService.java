@@ -7,6 +7,7 @@ import com.t3h.land2110e.model.request.RegisterRequest;
 import com.t3h.land2110e.model.response.LoginResponse;
 import com.t3h.land2110e.model.response.ResponseException;
 import com.t3h.land2110e.repository.UserProfileRepository;
+import com.t3h.land2110e.security.AuthorizationFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -90,5 +91,14 @@ public class UserService {
         loginResponse.setToken(getJWT(entity));
         loginResponse.setUser(entity);
         return loginResponse;
+    }
+
+    public Object getMyProfile() {
+        int userId = AuthorizationFilter.getCurrentUserId();
+        UserProfileEntity user = this.userProfileRepository.findOneById(userId);
+        if (user == null ){
+            throw new ResponseException("User not exist");
+        }
+        return user;
     }
 }

@@ -1,6 +1,5 @@
 package com.t3h.land2110e.security;
 
-import com.t3h.land2110e.entity.UserProfileEntity;
 import com.t3h.land2110e.repository.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

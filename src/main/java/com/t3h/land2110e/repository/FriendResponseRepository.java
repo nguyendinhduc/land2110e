@@ -34,4 +34,22 @@ public interface FriendResponseRepository extends JpaRepository<FriendResponse, 
             @Param("userId") int userId,
             @Param("status") String status
     );
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT " +
+                    "user_profile.id as friend_id " +
+                    "FROM friend " +
+                    "JOIN user_profile ON " +
+                    "(friend.sender_id = :userId AND friend.receiver_id = user_profile.id) OR " +
+                    "(friend.receiver_id = :userId AND friend.sender_id = user_profile.id) " +
+                    "LEFT JOIN message ON friend.last_message_id = message.id " +
+                    "WHERE (friend.sender_id = :userId or friend.receiver_id = :userId) " +
+                    "and (:status ='' OR friend.status = :status) " +
+                    "ORDER BY friend.updated_at DESC"
+    )
+    List<Integer> getFriendIds(
+            @Param("userId") int userId,
+            @Param("status") String status
+    );
 }

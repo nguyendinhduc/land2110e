@@ -1,6 +1,7 @@
 package com.t3h.land2110e.service;
 
 import com.corundumstudio.socketio.AckRequest;
+import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DisconnectListener;
@@ -30,7 +31,7 @@ public class SocketService {
     private static final Logger LOG = LoggerFactory.getLogger(SocketService.class);
 
     private SocketIOServer socketIOServer;
-    private Map<Integer, SocketIOClient> listConnects;
+    private Map<Integer, SocketIOClient> mapConnections;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -43,13 +44,15 @@ public class SocketService {
 
     @PostConstruct
     public void inits() {
-        listConnects = new HashMap<>();
+        mapConnections = new HashMap<>();
         executor = Executors.newFixedThreadPool(5);
-        com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
+        Configuration config = new Configuration();
 //        config.setHostname("0.0.0.0");
         config.setPort(1901);
         socketIOServer = new SocketIOServer(config);
-        socketIOServer.addConnectListener(socketIOClient -> LOG.info("onConnect " + socketIOClient.getRemoteAddress().toString()));
+        socketIOServer.addConnectListener(socketIOClient -> {
+            LOG.info("onConnect " + socketIOClient.getRemoteAddress().toString());
+        });
 //        socketIOServer.addDisconnectListener(this::dissconnect);
         socketIOServer.addDisconnectListener(new DisconnectListener() {
             @Override
@@ -66,7 +69,8 @@ public class SocketService {
 
     private void startConnect(SocketIOClient socketIOClient, String userId, AckRequest ackRequest) {
         try {
-            listConnects.put(Integer.parseInt(userId), socketIOClient);
+            mapConnections.put(Integer.parseInt(userId), socketIOClient);
+            //tính sau
             saveConnect(Integer.parseInt(userId), true);
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -85,9 +89,9 @@ public class SocketService {
                         online.setOnline(isConnect);
                         String strOnline = objectMapper.writeValueAsString(online);
                         for (Integer friend : friends) {
-                            for (Integer id : listConnects.keySet()) {
+                            for (Integer id : mapConnections.keySet()) {
                                 if (friend.equals(id)) {
-                                    listConnects.get(id).sendEvent("status", strOnline);
+                                    mapConnections.get(id).sendEvent("status", strOnline);
                                 }
                             }
                         }
@@ -97,9 +101,9 @@ public class SocketService {
     }
 
     private void dissconnect(SocketIOClient socketIOClien) {
-        for (Integer id : listConnects.keySet()) {
-            if (listConnects.get(id) == socketIOClien) {
-                listConnects.remove(id);
+        for (Integer id : mapConnections.keySet()) {
+            if (mapConnections.get(id) == socketIOClien) {
+                mapConnections.remove(id);
                 saveConnect(id, false);
             }
         }
@@ -118,7 +122,7 @@ public class SocketService {
             message.setCreatedAt(message.getCreatedAt());
             String contentJson = objectMapper.writeValueAsString(message);
             socketIOClient.sendEvent("sent", contentJson);
-            SocketIOClient client = listConnects.get(message.getReceiverId());
+            SocketIOClient client = mapConnections.get(message.getReceiverId());
             if (client != null) {
                 client.sendEvent("message", contentJson);
             }

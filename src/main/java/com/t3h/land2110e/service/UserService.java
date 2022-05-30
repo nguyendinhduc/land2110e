@@ -32,7 +32,7 @@ public class UserService {
 
         return Jwts.builder().setClaims(claims)
                 .signWith( SignatureAlgorithm.HS512, "123a@")
-                .setExpiration(new Date(new Date().getTime() + 60*60*1000L))
+                .setExpiration(new Date(new Date().getTime() + 24*60*60*1000L))
                 .compact();
     }
 

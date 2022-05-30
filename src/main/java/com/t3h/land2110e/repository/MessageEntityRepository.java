@@ -10,7 +10,8 @@ import java.util.List;
 public interface MessageEntityRepository extends JpaRepository<MessageEntity, String> {
 
     @Query(nativeQuery = true, value =
-            "SELECT * FROM message where (sender_id = :userId AND receiver_id = :friendId) OR " +
+            "SELECT * FROM message where " +
+                    "(sender_id = :userId AND receiver_id = :friendId) OR " +
                     "(sender_id = :friendId AND receiver_id = :userId)")
     List<MessageEntity> getMessages(
             @Param("userId") int userId,

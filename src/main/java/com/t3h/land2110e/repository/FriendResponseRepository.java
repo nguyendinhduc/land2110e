@@ -2,11 +2,13 @@ package com.t3h.land2110e.repository;
 
 import com.t3h.land2110e.model.response.FriendResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface FriendResponseRepository extends JpaRepository<FriendResponse, Integer> {
@@ -52,4 +54,15 @@ public interface FriendResponseRepository extends JpaRepository<FriendResponse, 
             @Param("userId") int userId,
             @Param("status") String status
     );
+
+    @Modifying
+    @Query(nativeQuery = true,
+    value = "UPDATE friend set last_message_id = :lastMessage where (sender_id = :senderId AND receiver_id = :receiverId) OR " +
+            "(sender_id = :receiverId AND receiver_id = :senderId)")
+    void updateLastMessage(
+            @Param("senderId") int senderId,
+            @Param("receiverId") int receiverId,
+            @Param("lastMessage") String lastMessage
+    );
+
 }

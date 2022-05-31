@@ -137,6 +137,7 @@ public class SocketService {
     private void saveMessage(MessageEntity message) {
         Observable.create((ObservableOnSubscribe<Boolean>) t -> {
                      messageEntityRepository.save(message);
+                     friendResponseRepository.updateLastMessage(message.getSenderId(), message.getReceiverId(), message.getId().toString());
                 }).subscribeOn(Schedulers.from(executor))
                 .subscribe();
     }
